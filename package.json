@@ -1,0 +1,67 @@
+{
+  "name": "content-review-filters",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/main.js",
+  "module": "dist/main.js",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js"
+    },
+    "./style.css": "./dist/content-review-filters.css"
+  },
+  "types": "dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b ./tsconfig.lib.json && vite build && npm run build:flowtypes",
+    "lint": "eslint .",
+    "start": "vite start",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build",
+    "build:flowtypes": "npx flowgen dist/main.d.ts -o dist/main.js.flow",
+    "prepare": "husky",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write ."
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.27.1",
+    "@eslint/js": "^9.30.1",
+    "@stylexjs/babel-plugin": "^0.14.1",
+    "@stylexjs/eslint-plugin": "^0.16.2",
+    "@stylexjs/postcss-plugin": "^0.14.1",
+    "@types/node": "^24.0.12",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "flowgen": "^1.21.0",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.1.11",
+    "vite-plugin-babel": "^1.3.2",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.14.1"
+  }
+}
