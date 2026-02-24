@@ -1,5 +1,7 @@
 # Content Review Filters
 
+[![NPM](https://nodei.co/npm/content-review-filters.png?mini=true)](https://npmjs.org/package/content-review-filters)
+
 This repository contains a collection of React components to enable developers to integrate content filters and settings in content review tools.
 
 These components support the following image and video filters:
