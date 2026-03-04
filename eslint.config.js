@@ -93,7 +93,7 @@ const rules = [
   // eslintPluginPrettierRecommended
 
   {
-    ignores: ['dist/**/*', '*.js'],
+    ignores: ['dist/**/*', 'dist-demo/**/*', '*.js'],
   },
 ];
 

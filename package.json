@@ -19,11 +19,14 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b ./tsconfig.lib.json && vite build && npm run build:flowtypes",
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "tsc -b ./tsconfig.lib.json && vite build && npm run build:flowtypes",
+    "build:demo": "BUILD_MODE=demo vite build",
     "lint": "eslint .",
     "start": "vite start",
     "preview": "vite preview",
-    "prepublishOnly": "npm run build",
+    "preview:demo": "vite preview --outDir dist-demo",
+    "prepublishOnly": "npm run build:lib",
     "build:flowtypes": "npx flowgen dist/main.d.ts -o dist/main.js.flow",
     "prepare": "husky",
     "prettier:check": "prettier --check .",
@@ -62,7 +65,8 @@
     "typescript-eslint": "^8.35.1",
     "vite": "^7.1.11",
     "vite-plugin-babel": "^1.3.2",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-singlefile": "^2.3.0"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.14.1"

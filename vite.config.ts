@@ -33,37 +33,48 @@ const babelConfig = {
   ],
 };
 
+const isDemo = process.env.BUILD_MODE === 'demo';
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    dts({
-      include: ['packages/content-review-components'],
-      tsconfigPath: './tsconfig.app.json',
-      rollupTypes: true,
-    }),
+    ...(!isDemo
+      ? [
+          dts({
+            include: ['packages/content-review-components'],
+            tsconfigPath: './tsconfig.app.json',
+            rollupTypes: true,
+          }),
+        ]
+      : []),
     babel({
       babelConfig,
       filter: /\.[jt]sx?$/u,
       loader: 'jsx',
     }),
   ],
-  build: {
-    copyPublicDir: false,
-    lib: {
-      entry: resolve(
-        __dirname,
-        'packages/content-review-components/ContentReviewComponents.ts',
-      ),
-      formats: ['es'],
-    },
-    rollupOptions: {
-      external: ['react', 'react/jsx-runtime'],
-      output: {
-        entryFileNames: 'main.js',
+  build: isDemo
+    ? {
+        outDir: 'dist-demo',
+        copyPublicDir: true,
+      }
+    : {
+        copyPublicDir: false,
+        lib: {
+          entry: resolve(
+            __dirname,
+            'packages/content-review-components/ContentReviewComponents.ts',
+          ),
+          formats: ['es'],
+        },
+        rollupOptions: {
+          external: ['react', 'react/jsx-runtime'],
+          output: {
+            entryFileNames: 'main.js',
+          },
+        },
       },
-    },
-  },
   css: {
     postcss: {
       plugins: [

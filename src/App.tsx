@@ -39,7 +39,7 @@ function AppContent() {
             This image uses the DEFAULT harm type with blur, transparency,
             grayscale, and reduced detail filters.
           </p>
-          <ContentFilteredImage src="/example_image.jpg" width="400" />
+          <ContentFilteredImage src="./example_image.jpg" width="400" />
         </div>
 
         <div {...stylex.props([styles.card, styles.wrapper])}>
@@ -50,7 +50,7 @@ function AppContent() {
           </p>
           <div style={{width: '400px', border: '1px solid #ccc'}}>
             <ContentFilteredImage
-              src="/example_image.jpg"
+              src="./example_image.jpg"
               width="400"
               harmType="GRAPHIC"
               caption="This image may contain graphic content that could be disturbing to some viewers."
@@ -68,7 +68,7 @@ function AppContent() {
             controls.
           </p>
           <ContentFilteredImage
-            src="/example_image.jpg"
+            src="./example_image.jpg"
             width="400"
             filterControls={true}
           />
@@ -82,7 +82,7 @@ function AppContent() {
             video, excluding the controls.
           </p>
           <ContentFilteredVideo filterControls={true} controls width="400">
-            <source src="/example_video.mp4" type="video/mp4" />
+            <source src="./example_video.mp4" type="video/mp4" />
           </ContentFilteredVideo>
           <h2>Another Example Filtered Video With Custom Video Component</h2>
           <p>
@@ -91,7 +91,7 @@ function AppContent() {
             video, excluding the controls.
           </p>
           <ContentFilteredVideo controls width="400">
-            <source src="/example_video_2.mp4" type="video/mp4" />
+            <source src="./example_video_2.mp4" type="video/mp4" />
           </ContentFilteredVideo>
           <h2>
             Example Filtered Video Using Just Wrapper Component and HTML Video
@@ -113,7 +113,7 @@ function AppContent() {
               width="800"
               harmType="GRAPHIC"
               caption="This video may contain graphic content that could be disturbing to some viewers.">
-              <source src="/example_video.mp4" type="video/mp4" />
+              <source src="./example_video.mp4" type="video/mp4" />
             </ContentFilteredVideo>
           </div>
         </div>
