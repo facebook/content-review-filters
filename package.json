@@ -1,6 +1,9 @@
 {
   "name": "content-review-filters",
   "version": "0.0.0",
+  "overrides": {
+    "minimatch@>=10.0.0 <10.2.4": "10.2.4"
+  },
   "type": "module",
   "main": "dist/main.js",
   "module": "dist/main.js",
