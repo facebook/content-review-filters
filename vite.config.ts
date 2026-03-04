@@ -37,6 +37,7 @@ const isDemo = process.env.BUILD_MODE === 'demo';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: isDemo ? '/content-review-filters/' : '/',
   plugins: [
     react(),
     ...(!isDemo
