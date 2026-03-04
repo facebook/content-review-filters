@@ -2,20 +2,73 @@
 
 [![NPM](https://nodei.co/npm/content-review-filters.png?mini=true)](https://npmjs.org/package/content-review-filters)
 
-This repository contains a collection of React components to enable developers to integrate content filters and settings in content review tools.
+**[View Live Demo →](https://facebook.github.io/content-review-filters/)**
 
-These components support the following image and video filters:
+This repository contains a collection of React components to enable developers to integrate content filters and settings in content review tools. These wellness features help protect content reviewers from the psychological impact of viewing potentially disturbing content.
 
-- Blur
-- Black & White
-- Sepia (i.e. yellow tint)
-- Transparency
-- Reduced detail (i.e. make the content appear like an illustration)
-- Warning screens (i.e. show a warning if content is predicted to be graphic)
+## Wellness Features
 
-Note: the reduced detail filter uses WebGL to apply shaders to images or videos to make them appear as an illustration.The warning screen filter requires integration of your own AI model for content detection - you can build your own model, write a prompt for an LLM, or use an off-the-shelf solution from Trust & Safety or image recognition/Content Understanding AI vendors.
+### Image & Video Filters
 
-Additionally, this repository provides a custom video player that allows users to set preferences for default playback speed, to skip forwards and backwards in a video, and to adjust the default audio volume.
+These visual filters can be applied to images and videos to reduce the emotional impact of graphic content:
+
+| Filter                        | Description                                                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Blur**                      | Applies a configurable blur effect to obscure fine details while maintaining general shapes and context            |
+| **Grayscale (Black & White)** | Removes color information, which can reduce the visceral impact of graphic content                                 |
+| **Sepia**                     | Applies a yellow/brown tint that creates visual distance by making content appear aged or historical               |
+| **Transparency**              | Reduces opacity to make content less visually prominent while still allowing review                                |
+| **Reduced Detail**            | Uses WebGL shaders to stylize content as an illustration, significantly reducing photorealism                      |
+| **Warning Screen**            | Displays an interstitial warning before showing content predicted to be graphic, requiring explicit opt-in to view |
+
+All filters are independently configurable with adjustable intensity levels (where applicable) and can be combined for cumulative effect.
+
+### Video Playback Controls
+
+Special playback features for video content to give reviewers more control:
+
+| Feature            | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------------- |
+| **Playback Speed** | Adjustable default playback speed (e.g., 1.5x, 2x) to review content faster |
+| **Jump Forward**   | Skip ahead by a configurable number of seconds                              |
+| **Jump Backward**  | Skip back by a configurable number of seconds                               |
+| **Auto Mute**      | Automatically mute audio when videos start playing                          |
+
+### Per-Harm-Type Preferences
+
+Filters can be configured differently based on content harm types. For example:
+
+- **Default content**: Light blur + grayscale
+- **Graphic content**: Full warning screen with explicit opt-in required
+
+### Persistent Settings
+
+User preferences are stored in browser localStorage by default, so settings persist across sessions. For cross-device persistence, preferences can be synced with a server-side database.
+
+### Interactive Filter Controls
+
+When enabled, a control bar appears on hover allowing reviewers to adjust filters for individual pieces of media in real-time.
+
+## Technical Notes
+
+### Reduced Detail Filter
+
+The reduced detail filter uses WebGL to apply shaders to images or videos to make them appear as an illustration.
+
+### Warning Screen Integration
+
+The warning screen filter requires integration of your own AI model for content detection - you can build your own model, write a prompt for an LLM, or use an off-the-shelf solution from Trust & Safety or image recognition/Content Understanding AI vendors.
+
+## Integration Options
+
+There are multiple ways of integrating these components into your own tool, depending on how much customization you would like:
+
+- Option A (easiest, least customizable): use provided `ContentFilteredImage` and `ContentFilteredVideo` components to render your image/video, with out-of-the box controls.
+- Option B (harder, more customizable): use `ContentFilteredImageWrapper` and `ContentFilteredVideoWrapper` to wrap an HTML `img` or `video` tag within your own custom image viewer or video player. Use `ContentFilterContextProvider` to write the state of each filter (enabled/disabled), which will then be read by the aforementioned wrapper components to apply the filters. We provide each control button from Option A as a separate component, allowing you to arrange these as you need or to override styles and icons to fit the theme of your application.
+
+The library also includes an example settings menu component for users to configure global preferences.
+
+While this repository only contains React implementations of these filters, we welcome contributions of equivalent components for other web frameworks. We also welcome other contributions to continue to improve these tools.
 
 ## Security Considerations
 
@@ -55,18 +108,7 @@ The preference management system uses browser localStorage:
 - **XSS Vulnerability**: If your application has XSS vulnerabilities, attackers can access localStorage data. Implement proper input sanitization and Content Security Policy to prevent XSS.
 - **Per-Domain Storage**: localStorage is per-domain, so preferences are isolated between different domains but shared across all pages of the same domain.
 
-There are multiple ways of integrating these components into your own tool, depending on how much customization you would like:
-
-- Option A (easiest, least customizable): use provided `ContentFilteredImage` and `ContentFilteredVideo` components to render your image/video, with out-of-the box controls.
-- Option B (harder, more customizable): use `ContentFilteredImageWrapper` and `ContentFilteredVideoWrapper` to wrap an HTML `img` or `video` tag within your own custom image viewer or video player. Use `ContentFilterContextProvider` to write the state of each filter (enabled/disabled), which will then be read by the aforementioned wrapper components to apply the filters. We provide each control button from Option A as a separate component, allowing you to arrange these as you need or to override styles and icons to fit the theme of your application.
-
-In addition to the filters described above, this repository includes:
-
-- An example settings menu component for users to configure the preferences. By default, this writes to local storage in the browser, enabling you to integrate this easily without having to make server side changes. For settings to persist across devices, we recommend syncing this state with a server-side database.
-
-While this repository only contains React implementations of these filters, we welcome contributions of equivalent components for other web frameworks. We also welcome other contributions to continue to improve these tools.
-
-## Reduced Detail Filter
+## Reduced Detail Filter Citation
 
 Files in the reduced_detail directory are adapted from the Reducing Affective Responses to Surgical Images and Videos Through Stylization paper, with some relevant modifications to make it work in the context of a React app.
 
