@@ -33,14 +33,12 @@ enum SkipDirection {
   Forward,
 }
 
-interface ContentFilteredVideoProps
-  extends React.VideoHTMLAttributes<HTMLVideoElement> {
+interface ContentFilteredVideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
   harmType?: string | number;
   caption?: string | null;
   filterControls?: boolean;
 }
-interface ContentFilteredVideoInnerProps
-  extends React.VideoHTMLAttributes<HTMLVideoElement> {
+interface ContentFilteredVideoInnerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
   filterControls?: boolean;
 }
 

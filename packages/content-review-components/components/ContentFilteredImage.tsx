@@ -13,8 +13,7 @@ import {useContentReviewFilterMediaInitialSettings} from '../hooks/useContentRev
 import ContentFilteredImageWrapper from './ContentFilteredImageWrapper';
 import FilterControlBar from './controls/FilterControlBar';
 
-interface ContentFilteredImageProps
-  extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ContentFilteredImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   harmType?: string | number;
   filterControls?: boolean;
   flipped?: boolean;
@@ -22,8 +21,7 @@ interface ContentFilteredImageProps
   caption?: string | null;
 }
 
-interface ContentFilteredImageInnerProps
-  extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ContentFilteredImageInnerProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   flipped?: boolean;
   rotation?: number;
   filterControls?: boolean;

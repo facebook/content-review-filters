@@ -11,8 +11,7 @@ import {getFilterStyles} from '../FilterPreferenceUtils';
 import WarningScreen from '../internal-components/WarningScreen';
 import ReducedDetailImageOverlay from './ReducedDetailImageOverlay';
 
-interface ContentFilteredImageWrapperProps
-  extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ContentFilteredImageWrapperProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   flipped?: boolean;
   rotation?: number;
   caption?: string | null;
