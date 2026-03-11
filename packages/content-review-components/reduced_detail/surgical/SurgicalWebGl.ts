@@ -85,44 +85,65 @@ export class WebGLFilter {
       this.textureManager.textureHeight,
     );
 
+    // Track intermediate textures for cleanup to prevent memory leaks
+    const intermediateTextures: Array<WebGLTexture | null> = [];
+
     let tmpTexture = null;
     const labTexture = this.shaderPrograms.rgb2Lab.renderToTexture(
       this.resultTextures.srcTexture,
     );
+    intermediateTextures.push(labTexture);
 
     const sstTexture = this.shaderPrograms.sst.renderToTexture(
       this.resultTextures.srcTexture,
       null,
     );
+    intermediateTextures.push(sstTexture);
+
     tmpTexture = this.shaderPrograms.gauss.renderToTexture(sstTexture);
+    intermediateTextures.push(tmpTexture);
+
     const tfmTexture = this.shaderPrograms.tfm.renderToTexture(tmpTexture);
+    intermediateTextures.push(tfmTexture);
+
     const bfeTexture = this.shaderPrograms.bf.renderToTexture(labTexture, {
       tfmTexture,
       n: bf_n_e,
     });
+    intermediateTextures.push(bfeTexture);
+
     const bfaTexture = this.shaderPrograms.bf.renderToTexture(labTexture, {
       tfmTexture,
       n: bf_n_a,
     });
+    intermediateTextures.push(bfaTexture);
 
     this.resultTextures.edgesTexture = this.fDoGFilter(
       bfeTexture,
       tfmTexture,
       dog_tau,
     );
+    intermediateTextures.push(this.resultTextures.edgesTexture);
 
     let cqTexture = this.shaderPrograms.color.renderToTexture(bfaTexture, null);
+    intermediateTextures.push(cqTexture);
+
     cqTexture = this.shaderPrograms.gauss3x3.renderToTexture(cqTexture, null);
+    intermediateTextures.push(cqTexture);
+
     this.resultTextures.cqRgbTexture =
       this.shaderPrograms.lab2Rgb.renderToTexture(cqTexture, null);
+    intermediateTextures.push(this.resultTextures.cqRgbTexture);
 
     const ovTexture = this.shaderPrograms.mix.renderToTexture(
       this.resultTextures.cqRgbTexture,
       this.resultTextures.edgesTexture,
     );
+    intermediateTextures.push(ovTexture);
 
     this.resultTextures.resultTexture =
       this.shaderPrograms.gauss3x3.renderToTexture(ovTexture, null);
+    // Don't add resultTexture to intermediateTextures - it's used for display
 
     this.gl.viewport(
       0,
@@ -132,6 +153,19 @@ export class WebGLFilter {
     );
 
     this.displayResult();
+
+    // Cleanup: Delete all intermediate textures to prevent memory leaks
+    intermediateTextures.forEach(tex => {
+      if (tex) {
+        this.gl.deleteTexture(tex);
+      }
+    });
+
+    // Clean up previous result texture if it exists
+    if (this.previousResultTexture) {
+      this.gl.deleteTexture(this.previousResultTexture);
+    }
+    this.previousResultTexture = this.resultTextures.resultTexture;
   }
   drawSceneNoOp(inputTexture: WebGLTexture | null) {
     if (inputTexture == null || !this.shadersReady) {
@@ -159,6 +193,7 @@ export class WebGLFilter {
   shadersReady: boolean = false;
   shaderPrograms: Record<string, ShaderProgramBase> = {};
   resultTextures: Record<string, WebGLTexture | null> = {};
+  previousResultTexture: WebGLTexture | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;

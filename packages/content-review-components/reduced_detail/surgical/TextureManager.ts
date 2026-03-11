@@ -19,6 +19,8 @@ export class TextureManager {
   lastImage: HTMLImageElement | null = null;
   lastVideo: HTMLVideoElement | null = null;
   cachedTexture: WebGLTexture | null = null;
+  cachedVideoTexture: WebGLTexture | null = null;
+  cachedImageTexture: WebGLTexture | null = null;
   lastMaxSize: number = -1;
   originalImageSize: {width: number; height: number} = {width: 0, height: 0};
   originalVideoSize: {width: number; height: number} = {width: 0, height: 0};
@@ -92,6 +94,12 @@ export class TextureManager {
       return null;
     }
 
+    // Delete previous video texture to prevent memory leak
+    if (this.cachedVideoTexture !== null) {
+      this.gl.deleteTexture(this.cachedVideoTexture);
+      this.cachedVideoTexture = null;
+    }
+
     const maxSize = ShaderProperties.values.max_size;
     const w = this.originalVideoSize.width;
     const h = this.originalVideoSize.height;
@@ -136,6 +144,10 @@ export class TextureManager {
       console.error(error);
       return null;
     }
+
+    // Cache the new texture for deletion on next frame
+    this.cachedVideoTexture = texture;
+
     return texture;
   }
 
@@ -148,6 +160,12 @@ export class TextureManager {
   getLastImageTexture(): WebGLTexture | null {
     if (this.lastImage === null) {
       return null;
+    }
+
+    // Delete previous image texture to prevent memory leak
+    if (this.cachedImageTexture !== null) {
+      this.gl.deleteTexture(this.cachedImageTexture);
+      this.cachedImageTexture = null;
     }
 
     const maxSize = ShaderProperties.values.max_size;
@@ -194,6 +212,10 @@ export class TextureManager {
       console.log(error);
       return null;
     }
+
+    // Cache the new texture for deletion on next load
+    this.cachedImageTexture = texture;
+
     return texture;
   }
 
