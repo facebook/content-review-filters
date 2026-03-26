@@ -32,7 +32,16 @@ function AppContent() {
     <>
       <div {...stylex.props(styles.wrapper)}>
         <h1>Content Review Filters</h1>
-        <p>This is a demo of how to use the content review filters.</p>
+        <p>
+          This is a demo of how to use the content review filters. Use the heart
+          menu to change the global default state of each preferences. When
+          configuring this library, developers can specify different types of
+          content (e.g. AI-detected content categories such as "graphic" content
+          or "sexual" content etc.); users can then set different defaults for
+          each type of content. Use the filter controls that appear on a
+          specific image/video to change the state for that specific
+          image/video.
+        </p>
         <div {...stylex.props(styles.card)}>
           <h2>Example Filtered Image (Default Harm Type)</h2>
           <p>

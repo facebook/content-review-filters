@@ -11,6 +11,8 @@ import {
   PreferencesDropdown,
   HeartIcon,
 } from '../../packages/content-review-components/ContentReviewComponents';
+import {NuxTooltip} from './NuxTooltip';
+import {useNuxDismissed} from './useNuxDismissed';
 
 const styles = stylex.create({
   navbar: {
@@ -37,6 +39,9 @@ const styles = stylex.create({
     display: 'flex',
     gap: '16px',
   },
+  heartButtonWrapper: {
+    position: 'relative',
+  },
   heartButton: {
     alignItems: 'center',
     backgroundColor: {
@@ -56,9 +61,14 @@ const styles = stylex.create({
 
 export function NavigationBar() {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [nuxDismissed, dismissNux] = useNuxDismissed();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    // Clicking the heart means the user discovered the feature
+    if (!nuxDismissed) {
+      dismissNux();
+    }
   };
 
   const closeDropdown = () => {
@@ -70,12 +80,16 @@ export function NavigationBar() {
       <div {...stylex.props(styles.brand)}>Content Review Filters Demo</div>
 
       <div {...stylex.props(styles.actions)}>
-        <button
-          {...stylex.props(styles.heartButton)}
-          onClick={toggleDropdown}
-          title="Content filter preferences">
-          <HeartIcon isActive={isDropdownOpen} />
-        </button>
+        <div {...stylex.props(styles.heartButtonWrapper)}>
+          <button
+            {...stylex.props(styles.heartButton)}
+            onClick={toggleDropdown}
+            title="Content filter preferences"
+            data-testid="heart-button">
+            <HeartIcon isActive={isDropdownOpen} />
+          </button>
+          <NuxTooltip visible={!nuxDismissed} onDismiss={dismissNux} />
+        </div>
 
         <PreferencesDropdown isOpen={isDropdownOpen} onClose={closeDropdown} />
       </div>
