@@ -111,14 +111,12 @@ export default function ContentFilteredVideoWrapper({
     }
   }, [settings.videoPlaybackSpeed, videoPlayerImperativeRef]);
 
-  useCallback(() => {
-    setVideoElement(prevEl => {
-      if (prevEl) {
-        prevEl.muted = settings.autoMute;
-      }
-      return prevEl;
-    });
-  }, [settings.autoMute]);
+  useEffect(() => {
+    const el = videoPlayerImperativeRef.current?.getVideoElement();
+    if (el) {
+      el.muted = settings.autoMute;
+    }
+  }, [settings.autoMute, videoPlayerImperativeRef]);
 
   const {
     blur,
