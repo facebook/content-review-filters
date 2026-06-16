@@ -37,7 +37,9 @@ export type ContentReviewFilterGlobalPreferences<
   [K in THarmType]: ContentReviewFilterSettings;
 };
 
-export const DEFAULT_PREFENCES_KEY = 'DEFAULT' as const;
+export const DEFAULT_PREFERENCES_KEY = 'DEFAULT' as const;
+/** @deprecated Use DEFAULT_PREFERENCES_KEY instead */
+export const DEFAULT_PREFENCES_KEY = DEFAULT_PREFERENCES_KEY;
 
 // Type guard to check if the object is ContentReviewFilterSettings
 // eslint-disable-next-line react-refresh/only-export-components
@@ -86,7 +88,7 @@ export function toContentReviewFilterGlobalPreferences<
   THarmType extends string | number,
 >(
   settings: ContentReviewFilterSettings,
-  harmType: THarmType = DEFAULT_PREFENCES_KEY as THarmType,
+  harmType: THarmType = DEFAULT_PREFERENCES_KEY as THarmType,
 ): ContentReviewFilterGlobalPreferences<THarmType> {
   return {
     [harmType]: settings,
@@ -112,7 +114,7 @@ const ContentReviewFilterGlobalPreferencesContext: Context<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = createContext<ContentReviewFilterGlobalPreferencesContextType<any>>({
   preferences: {
-    [DEFAULT_PREFENCES_KEY]: {
+    [DEFAULT_PREFERENCES_KEY]: {
       imageBlur: 0,
       imageTransparency: 0,
       imageGrayscale: false,
@@ -163,7 +165,7 @@ export function ContentReviewFilterGlobalPreferencesProvider<
     isContentReviewFilterSettings(initialPreferences)
       ? toContentReviewFilterGlobalPreferences(
           initialPreferences,
-          DEFAULT_PREFENCES_KEY as THarmType,
+          DEFAULT_PREFERENCES_KEY as THarmType,
         )
       : (initialPreferences as ContentReviewFilterGlobalPreferences<THarmType>);
   // Load persisted preferences merged with initial preferences
@@ -184,7 +186,7 @@ export function ContentReviewFilterGlobalPreferencesProvider<
     >(
       setting: PK,
       value: ContentReviewFilterGlobalPreferences<THarmType>[K][PK],
-      harmType: K = DEFAULT_PREFENCES_KEY as K,
+      harmType: K = DEFAULT_PREFERENCES_KEY as K,
     ) => {
       // Validate numeric values based on the setting type
       let validatedValue: ContentReviewFilterGlobalPreferences<THarmType>[K][PK] =

@@ -77,9 +77,23 @@ export function ContentReviewFilterSingleMediaContextProvider({
       setting: PK,
       value: ContentReviewFilterSingleMediaSettings[PK],
     ) => {
-      // Validate numeric values are between 0-1
-      const validatedValue =
-        typeof value === 'number' ? Math.max(0, Math.min(1, value)) : value;
+      // Validate numeric values using per-setting ranges
+      let validatedValue: ContentReviewFilterSingleMediaSettings[PK] = value;
+      if (typeof value === 'number') {
+        let numericValue: number;
+        if (setting === 'videoPlaybackSpeed') {
+          numericValue = Math.max(0.1, Math.min(10, value));
+        } else if (
+          setting === 'videoJumpForwardLength' ||
+          setting === 'videoJumpBackwardLength'
+        ) {
+          numericValue = Math.max(1, Math.min(180, value));
+        } else {
+          numericValue = Math.max(0, Math.min(1, value));
+        }
+        validatedValue =
+          numericValue as ContentReviewFilterSingleMediaSettings[PK];
+      }
 
       setSettings(prev => ({
         ...prev,
