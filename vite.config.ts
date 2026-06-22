@@ -51,7 +51,7 @@ export default defineConfig({
       : []),
     babel({
       babelConfig,
-      filter: /\.[jt]sx?$/u,
+      include: /\.[jt]sx?$/u,
       loader: 'jsx',
     }),
   ],
