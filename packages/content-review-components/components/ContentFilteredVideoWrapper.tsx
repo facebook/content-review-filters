@@ -16,6 +16,7 @@ export interface IGenericVideoPlayerHandles {
   // If using our controls, when our control button is clicked we will skip forward
   // seekAbsolute(time: number): void;
   setPlaybackRate(rate: number): void;
+  setMuted?(muted: boolean): void;
   getVideoElement(): HTMLVideoElement | null;
   [key: string]: unknown;
 }
@@ -111,14 +112,11 @@ export default function ContentFilteredVideoWrapper({
     }
   }, [settings.videoPlaybackSpeed, videoPlayerImperativeRef]);
 
-  useCallback(() => {
-    setVideoElement(prevEl => {
-      if (prevEl) {
-        prevEl.muted = settings.autoMute;
-      }
-      return prevEl;
-    });
-  }, [settings.autoMute]);
+  useEffect(() => {
+    if (videoPlayerImperativeRef?.current != null) {
+      videoPlayerImperativeRef.current.setMuted?.(settings.autoMute);
+    }
+  }, [settings.autoMute, videoPlayerImperativeRef]);
 
   const {
     blur,
