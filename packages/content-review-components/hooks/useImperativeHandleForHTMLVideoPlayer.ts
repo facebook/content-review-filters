@@ -37,6 +37,12 @@ export default function useImperativeHandleForHTMLVideoPlayer(
         }
         videoElementRef.current.playbackRate = rate;
       },
+      setMuted(muted: boolean) {
+        if (videoElementRef.current == null) {
+          return;
+        }
+        videoElementRef.current.muted = muted;
+      },
       getVideoElement(): HTMLVideoElement | null {
         return videoElementRef.current;
       },

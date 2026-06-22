@@ -6,7 +6,7 @@
  */
 
 import {
-  DEFAULT_PREFENCES_KEY,
+  DEFAULT_PREFERENCES_KEY,
   useContentReviewFilterGlobalPreferences,
 } from '../ContentReviewFilterGlobalPreferenceContext';
 import type {ContentReviewFilterSingleMediaSettings} from '../ContentReviewFilterSingleMediaContext';
@@ -26,7 +26,7 @@ export function useContentReviewFilterMediaInitialSettings(
   const resolvedHarmType =
     harmType && harmType in globalPreferences.preferences
       ? harmType
-      : DEFAULT_PREFENCES_KEY;
+      : DEFAULT_PREFERENCES_KEY;
 
   const globalSettings = globalPreferences.preferences[resolvedHarmType];
 

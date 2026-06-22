@@ -50,6 +50,39 @@ const ContentReviewFilterSingleMediaContext: Context<ContentReviewFilterSingleMe
     updateSettings: () => {},
   });
 
+function validateSingleMediaSettingValue<
+  PK extends keyof ContentReviewFilterSingleMediaSettings,
+>(
+  setting: PK,
+  value: ContentReviewFilterSingleMediaSettings[PK],
+): ContentReviewFilterSingleMediaSettings[PK] {
+  if (typeof value !== 'number') {
+    return value;
+  }
+
+  if (setting === 'videoPlaybackSpeed') {
+    return Math.max(
+      0.1,
+      Math.min(10, value),
+    ) as ContentReviewFilterSingleMediaSettings[PK];
+  }
+
+  if (
+    setting === 'videoJumpForwardLength' ||
+    setting === 'videoJumpBackwardLength'
+  ) {
+    return Math.max(
+      1,
+      Math.min(180, value),
+    ) as ContentReviewFilterSingleMediaSettings[PK];
+  }
+
+  return Math.max(
+    0,
+    Math.min(1, value),
+  ) as ContentReviewFilterSingleMediaSettings[PK];
+}
+
 export type ContentReviewFilterSingleMediaContextProviderProps = {
   children: ReactNode;
   initialSettings: ContentReviewFilterSingleMediaSettings;
@@ -77,9 +110,7 @@ export function ContentReviewFilterSingleMediaContextProvider({
       setting: PK,
       value: ContentReviewFilterSingleMediaSettings[PK],
     ) => {
-      // Validate numeric values are between 0-1
-      const validatedValue =
-        typeof value === 'number' ? Math.max(0, Math.min(1, value)) : value;
+      const validatedValue = validateSingleMediaSettingValue(setting, value);
 
       setSettings(prev => ({
         ...prev,
