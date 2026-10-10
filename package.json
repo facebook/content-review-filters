@@ -26,6 +26,7 @@
     "start": "vite start",
     "preview": "vite preview",
     "preview:demo": "vite preview --outDir dist-demo",
+    "test": "vitest run --dir packages",
     "test:e2e": "playwright test",
     "prepublishOnly": "npm run build:lib",
     "build:flowtypes": "npx flowgen dist/main.d.ts -o dist/main.js.flow",
@@ -68,7 +69,8 @@
     "vite": "^8.0.16",
     "vite-plugin-babel": "^1.7.3",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-singlefile": "^2.3.3"
+    "vite-plugin-singlefile": "^2.3.3",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.14.1"

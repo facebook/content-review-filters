@@ -11,6 +11,7 @@ import {
   useContentReviewFilterPreferencesFromLocalStorage,
   savePreferencesToStorage,
 } from './hooks/useContentReviewFilterPreferencesFromLocalStorage';
+import {MaxBlurPxProvider} from './MaxBlurPxContext';
 
 export type ContentReviewFilterSettings = {
   imageBlur: number;
@@ -150,6 +151,8 @@ export type ContentReviewFilterGlobalPreferencesProviderProps<
     value: ContentReviewFilterGlobalPreferences<THarmType>[K][PK],
     harmType?: K,
   ) => void;
+  /** Blur, in pixels, applied at the maximum blur preference. Defaults to 10. */
+  maxBlurPx?: number;
 };
 
 export function ContentReviewFilterGlobalPreferencesProvider<
@@ -158,6 +161,7 @@ export function ContentReviewFilterGlobalPreferencesProvider<
   children,
   initialPreferences,
   onPreferenceChange,
+  maxBlurPx,
 }: ContentReviewFilterGlobalPreferencesProviderProps<THarmType>) {
   // Convert ContentReviewFilterSettings to ContentReviewFilterGlobalPreferences if needed
   const normalizedPreferences: ContentReviewFilterGlobalPreferences<THarmType> =
@@ -236,7 +240,7 @@ export function ContentReviewFilterGlobalPreferencesProvider<
 
   return (
     <ContentReviewFilterGlobalPreferencesContext.Provider value={contextValue}>
-      {children}
+      <MaxBlurPxProvider maxBlurPx={maxBlurPx}>{children}</MaxBlurPxProvider>
     </ContentReviewFilterGlobalPreferencesContext.Provider>
   );
 }

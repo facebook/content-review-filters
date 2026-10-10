@@ -10,14 +10,14 @@ This repository contains a collection of React components to enable developers t
 
 ### Image & Video Filters
 
-| Filter                        | Description                                                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **Blur**                      | Applies a configurable blur effect to obscure fine details while maintaining general shapes and context            |
-| **Grayscale (Black & White)** | Removes color information, which can reduce the visceral impact of graphic content                                 |
-| **Sepia**                     | Applies a yellow/brown tint that creates visual distance by making content appear aged or historical               |
-| **Transparency**              | Reduces opacity to make content less visually prominent while still allowing review                                |
-| **Reduced Detail**            | Uses WebGL shaders to stylize content as an illustration, significantly reducing photorealism                      |
-| **Warning Screen**            | Displays an interstitial warning before showing content predicted to be graphic, requiring explicit opt-in to view |
+| Filter                        | Description                                                                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Blur**                      | Applies a configurable blur effect to obscure fine details while maintaining general shapes and context (see [Blur scale](#blur-scale)) |
+| **Grayscale (Black & White)** | Removes color information, which can reduce the visceral impact of graphic content                                                      |
+| **Sepia**                     | Applies a yellow/brown tint that creates visual distance by making content appear aged or historical                                    |
+| **Transparency**              | Reduces opacity to make content less visually prominent while still allowing review                                                     |
+| **Reduced Detail**            | Uses WebGL shaders to stylize content as an illustration, significantly reducing photorealism                                           |
+| **Warning Screen**            | Displays an interstitial warning before showing content predicted to be graphic, requiring explicit opt-in to view                      |
 
 All filters are independently configurable with adjustable intensity levels (where applicable) and can be combined for cumulative effect.
 
@@ -52,6 +52,27 @@ When enabled, a control bar appears on hover allowing reviewers to adjust filter
 ### Reduced Detail Filter
 
 The reduced detail filter uses WebGL to apply shaders to images or videos to make them appear as an illustration.
+
+### Blur scale
+
+Blur preferences are normalized between 0 and 1 and applied as a fraction of a
+maximum in pixels. The maximum is 10px by default, so a preference of 1 renders
+`blur(10px)` and 0.5 renders `blur(5px)`.
+
+Apps that need a stronger blur can raise the maximum instead of passing
+preferences above 1, which is outside the range the filter controls validate:
+
+```jsx
+<ContentReviewFilterGlobalPreferencesProvider
+  initialPreferences={preferences}
+  maxBlurPx={40}>
+  {children}
+</ContentReviewFilterGlobalPreferencesProvider>
+```
+
+`ContentReviewFilterSingleMediaContextProvider` accepts the same prop, for apps
+that compose the wrapper components themselves. A provider that leaves it out
+inherits the value from the one above it.
 
 ### Warning Screen Integration
 
