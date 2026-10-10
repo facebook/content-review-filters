@@ -8,8 +8,9 @@
 'use strict';
 
 import * as React from 'react';
-import {useMemo, useEffect} from 'react';
+import {useMemo, useEffect, useRef} from 'react';
 import * as stylex from '@stylexjs/stylex';
+import {useFilterRenderConfig} from '../FilterRenderConfigContext';
 import {useVideoCanvasRenderer} from '../hooks/useVideoCanvasRenderer';
 import {NormalVideoRenderer} from './video_renderers/NormalVideoRenderer';
 import {ReducedDetailVideoRenderer} from './video_renderers/ReducedDetailVideoRenderer';
@@ -46,12 +47,28 @@ export default function VideoCanvasOverlay({
   video,
   filterStyles,
 }: VideoCanvasOverlayProps): React.ReactElement {
+  const {onReducedDetailUnavailable} = useFilterRenderConfig();
+
   // Create renderers as regular state/memoized values instead of refs
   const normalRenderer = useMemo(() => new NormalVideoRenderer(), []);
   const reducedDetailRenderer = useMemo(
     () => new ReducedDetailVideoRenderer(videoReducedDetailIntensity),
     [videoReducedDetailIntensity],
   );
+
+  // render() runs once per frame, so the guard lives here and survives renderer
+  // changes: the app hears about an unavailable backend at most once per
+  // mounted video, never once per frame.
+  const hasSignaledUnavailable = useRef(false);
+  useEffect(() => {
+    reducedDetailRenderer.setOnUnavailable(() => {
+      if (hasSignaledUnavailable.current) {
+        return;
+      }
+      hasSignaledUnavailable.current = true;
+      onReducedDetailUnavailable?.();
+    });
+  }, [reducedDetailRenderer, onReducedDetailUnavailable]);
 
   // Update intensity whenever it changes
   useEffect(() => {

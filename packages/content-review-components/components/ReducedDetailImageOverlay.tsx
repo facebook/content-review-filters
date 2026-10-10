@@ -7,7 +7,8 @@
 
 'use strict';
 
-import {reducedDetailFilter} from '../ReducedDetailFilterSingleton';
+import {getReducedDetailFilter} from '../ReducedDetailFilterSingleton';
+import {useFilterRenderConfig} from '../FilterRenderConfigContext';
 import ShaderProperties from '../reduced_detail/surgical/ShaderProperties';
 import {getShaderParamsFromIntensity} from '../reduced_detail/ReducedDetailFilterUtils';
 
@@ -56,7 +57,26 @@ export default function ReducedDetailImageOverlay({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const canvas2dCtx = useRef<CanvasRenderingContext2D | null>(null);
   const [isEffectLoading, setIsEffectLoading] = useState(true);
-  const filter = reducedDetailFilter;
+  const [isFilterUnavailable, setIsFilterUnavailable] = useState(false);
+  const {onReducedDetailUnavailable} = useFilterRenderConfig();
+
+  // Kept in a ref so an inline callback from the app does not rebuild the
+  // render callbacks on every render.
+  const onUnavailableRef = useRef(onReducedDetailUnavailable);
+  useEffect(() => {
+    onUnavailableRef.current = onReducedDetailUnavailable;
+  }, [onReducedDetailUnavailable]);
+
+  // At most one signal per mounted media, never one per frame.
+  const hasSignaledUnavailable = useRef(false);
+  const signalUnavailable = useCallback(() => {
+    setIsFilterUnavailable(true);
+    if (hasSignaledUnavailable.current) {
+      return;
+    }
+    hasSignaledUnavailable.current = true;
+    onUnavailableRef.current?.();
+  }, []);
 
   const clearCanvas = useCallback(() => {
     if (canvas2dCtx.current != null) {
@@ -71,11 +91,19 @@ export default function ReducedDetailImageOverlay({
       localImageRef.current != null &&
       canvas2dCtx.current != null
     ) {
+      const filter = getReducedDetailFilter();
+      if (filter === null) {
+        // No backend to reduce the detail with: leave the canvas empty so the
+        // overlay keeps covering the image instead of revealing it.
+        clearCanvas();
+        signalUnavailable();
+        return;
+      }
       filter.filter(localImageRef.current, canvas2dCtx.current);
     } else if (!filterEnabled && canvas2dCtx.current != null) {
       clearCanvas();
     }
-  }, [filterEnabled, filter, clearCanvas]);
+  }, [filterEnabled, clearCanvas, signalUnavailable]);
 
   useEffect(() => {
     if (
@@ -129,8 +157,11 @@ export default function ReducedDetailImageOverlay({
         stylex.props(
           styles.canvas,
           flipped && styles.flipped,
-          // While the effect or the image is loading, make sure to blur it so the reviewer doesn't see a flash of graphic content
-          filterEnabled && isEffectLoading && styles.blur,
+          // While the effect or the image is loading, make sure to blur it so the reviewer doesn't see a flash of graphic content.
+          // The same cover stays on for good when the filter is unavailable.
+          filterEnabled &&
+            (isEffectLoading || isFilterUnavailable) &&
+            styles.blur,
         ).className
       }
       height={height}

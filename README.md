@@ -53,6 +53,28 @@ When enabled, a control bar appears on hover allowing reviewers to adjust filter
 
 The reduced detail filter uses WebGL to apply shaders to images or videos to make them appear as an illustration.
 
+The WebGL context is created the first time a media actually asks for reduced
+detail, not when the package is imported. An app that only uses the CSS based
+filters never creates one, and importing the package works in environments
+without WebGL2 or `OffscreenCanvas` - a test runner using jsdom, for example.
+
+When reduced detail is requested and the environment cannot provide WebGL2, the
+filter degrades instead of throwing: the media stays covered rather than being
+shown in full detail, the other filters keep working, and the package reports
+it once. Pass `onReducedDetailUnavailable` to either provider to react to it,
+for instance by turning on the warning screen:
+
+```jsx
+<ContentReviewFilterGlobalPreferencesProvider
+  initialPreferences={preferences}
+  onReducedDetailUnavailable={() => setShowWarningScreen(true)}>
+  {children}
+</ContentReviewFilterGlobalPreferencesProvider>
+```
+
+`ContentReviewFilterSingleMediaContextProvider` accepts the same prop, for apps
+that compose the wrapper components themselves. The innermost provider wins.
+
 ### Warning Screen Integration
 
 The warning screen filter requires integration of your own AI model for content detection - you can build your own model, write a prompt for an LLM, or use an off-the-shelf solution from Trust & Safety or image recognition/Content Understanding AI vendors.

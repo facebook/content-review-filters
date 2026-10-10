@@ -31,8 +31,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    // Pin the port: `npm run dev` uses Vite's default (5173), which does not
+    // match the baseURL above, so the server was never found.
+    command: 'npm run dev -- --port 5175 --strictPort',
     url: 'http://localhost:5175',
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 });

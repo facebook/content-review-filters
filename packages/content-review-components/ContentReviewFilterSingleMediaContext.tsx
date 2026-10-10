@@ -7,6 +7,8 @@
 
 import type {Context, ReactNode} from 'react';
 import React, {createContext, useContext, useState, useEffect} from 'react';
+import type {FilterRenderConfigProps} from './FilterRenderConfigContext';
+import {FilterRenderConfigProvider} from './FilterRenderConfigContext';
 
 export type ContentReviewFilterSingleMediaSettings = {
   blur: number;
@@ -83,19 +85,21 @@ function validateSingleMediaSettingValue<
   ) as ContentReviewFilterSingleMediaSettings[PK];
 }
 
-export type ContentReviewFilterSingleMediaContextProviderProps = {
-  children: ReactNode;
-  initialSettings: ContentReviewFilterSingleMediaSettings;
-  onSettingChange?: <PK extends keyof ContentReviewFilterSingleMediaSettings>(
-    setting: PK,
-    value: ContentReviewFilterSingleMediaSettings[PK],
-  ) => void;
-};
+export type ContentReviewFilterSingleMediaContextProviderProps =
+  FilterRenderConfigProps & {
+    children: ReactNode;
+    initialSettings: ContentReviewFilterSingleMediaSettings;
+    onSettingChange?: <PK extends keyof ContentReviewFilterSingleMediaSettings>(
+      setting: PK,
+      value: ContentReviewFilterSingleMediaSettings[PK],
+    ) => void;
+  };
 
 export function ContentReviewFilterSingleMediaContextProvider({
   children,
   initialSettings,
   onSettingChange,
+  onReducedDetailUnavailable,
 }: ContentReviewFilterSingleMediaContextProviderProps) {
   const [settings, setSettings] =
     useState<ContentReviewFilterSingleMediaSettings>(initialSettings);
@@ -131,7 +135,10 @@ export function ContentReviewFilterSingleMediaContextProvider({
 
   return (
     <ContentReviewFilterSingleMediaContext.Provider value={contextValue}>
-      {children}
+      <FilterRenderConfigProvider
+        onReducedDetailUnavailable={onReducedDetailUnavailable}>
+        {children}
+      </FilterRenderConfigProvider>
     </ContentReviewFilterSingleMediaContext.Provider>
   );
 }

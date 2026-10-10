@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {reducedDetailFilter} from '../../ReducedDetailFilterSingleton';
+import {getReducedDetailFilter} from '../../ReducedDetailFilterSingleton';
 import ShaderProperties from '../../reduced_detail/surgical/ShaderProperties';
 import {getShaderParamsFromIntensity} from '../../reduced_detail/ReducedDetailFilterUtils';
 import type {VideoRenderer} from '../../hooks/useVideoCanvasRenderer';
@@ -16,10 +16,19 @@ import type {VideoRenderer} from '../../hooks/useVideoCanvasRenderer';
  */
 export class ReducedDetailVideoRenderer implements VideoRenderer {
   private intensity: number;
+  private onUnavailable?: () => void;
 
   constructor(intensity: number) {
     this.intensity = intensity;
     this.updateShaderProperties();
+  }
+
+  /**
+   * Called when a frame could not be reduced because the backend is missing.
+   * Set from an effect, so the owner can keep the "only once" guard.
+   */
+  setOnUnavailable(onUnavailable: (() => void) | undefined): void {
+    this.onUnavailable = onUnavailable;
   }
 
   updateIntensity(intensity: number): void {
@@ -38,6 +47,20 @@ export class ReducedDetailVideoRenderer implements VideoRenderer {
   }
 
   render(video: HTMLVideoElement, canvas2dCtx: CanvasRenderingContext2D): void {
-    reducedDetailFilter.drawFrame(video, canvas2dCtx);
+    const filter = getReducedDetailFilter();
+    if (filter === null) {
+      // The reduction could not be applied, so the frame must not be shown.
+      canvas2dCtx.fillStyle = 'black';
+      canvas2dCtx.fillRect(
+        0,
+        0,
+        canvas2dCtx.canvas.width,
+        canvas2dCtx.canvas.height,
+      );
+      this.onUnavailable?.();
+      return;
+    }
+
+    filter.drawFrame(video, canvas2dCtx);
   }
 }

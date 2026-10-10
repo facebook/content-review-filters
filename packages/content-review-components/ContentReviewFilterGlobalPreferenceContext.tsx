@@ -11,6 +11,8 @@ import {
   useContentReviewFilterPreferencesFromLocalStorage,
   savePreferencesToStorage,
 } from './hooks/useContentReviewFilterPreferencesFromLocalStorage';
+import type {FilterRenderConfigProps} from './FilterRenderConfigContext';
+import {FilterRenderConfigProvider} from './FilterRenderConfigContext';
 
 export type ContentReviewFilterSettings = {
   imageBlur: number;
@@ -137,7 +139,7 @@ const ContentReviewFilterGlobalPreferencesContext: Context<
 
 export type ContentReviewFilterGlobalPreferencesProviderProps<
   THarmType extends string | number,
-> = {
+> = FilterRenderConfigProps & {
   children: ReactNode;
   initialPreferences:
     | ContentReviewFilterGlobalPreferences<THarmType>
@@ -158,6 +160,7 @@ export function ContentReviewFilterGlobalPreferencesProvider<
   children,
   initialPreferences,
   onPreferenceChange,
+  onReducedDetailUnavailable,
 }: ContentReviewFilterGlobalPreferencesProviderProps<THarmType>) {
   // Convert ContentReviewFilterSettings to ContentReviewFilterGlobalPreferences if needed
   const normalizedPreferences: ContentReviewFilterGlobalPreferences<THarmType> =
@@ -236,7 +239,10 @@ export function ContentReviewFilterGlobalPreferencesProvider<
 
   return (
     <ContentReviewFilterGlobalPreferencesContext.Provider value={contextValue}>
-      {children}
+      <FilterRenderConfigProvider
+        onReducedDetailUnavailable={onReducedDetailUnavailable}>
+        {children}
+      </FilterRenderConfigProvider>
     </ContentReviewFilterGlobalPreferencesContext.Provider>
   );
 }
