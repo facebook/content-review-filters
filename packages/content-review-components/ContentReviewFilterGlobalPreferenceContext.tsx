@@ -11,7 +11,7 @@ import {
   useContentReviewFilterPreferencesFromLocalStorage,
   savePreferencesToStorage,
 } from './hooks/useContentReviewFilterPreferencesFromLocalStorage';
-import {MaxBlurPxProvider} from './MaxBlurPxContext';
+import {DEFAULT_MAX_BLUR_PX, resolveMaxBlurPx} from './FilterPreferenceUtils';
 
 export type ContentReviewFilterSettings = {
   imageBlur: number;
@@ -107,6 +107,8 @@ export type ContentReviewFilterGlobalPreferencesContextType<
     value: ContentReviewFilterGlobalPreferences<THarmType>[K][PK],
     harmType?: K,
   ) => void;
+  /** Blur, in pixels, applied at the maximum blur preference. */
+  maxBlurPx: number;
 };
 const ContentReviewFilterGlobalPreferencesContext: Context<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,6 +136,7 @@ const ContentReviewFilterGlobalPreferencesContext: Context<
     },
   },
   updatePreference: () => {},
+  maxBlurPx: DEFAULT_MAX_BLUR_PX,
 });
 
 export type ContentReviewFilterGlobalPreferencesProviderProps<
@@ -151,7 +154,11 @@ export type ContentReviewFilterGlobalPreferencesProviderProps<
     value: ContentReviewFilterGlobalPreferences<THarmType>[K][PK],
     harmType?: K,
   ) => void;
-  /** Blur, in pixels, applied at the maximum blur preference. Defaults to 10. */
+  /**
+   * Blur, in pixels, applied at the maximum blur preference. Defaults to 10.
+   * A value that cannot produce a blur (not finite, zero or negative) is
+   * ignored in favour of that default.
+   */
   maxBlurPx?: number;
 };
 
@@ -234,13 +241,14 @@ export function ContentReviewFilterGlobalPreferencesProvider<
     () => ({
       preferences,
       updatePreference,
+      maxBlurPx: resolveMaxBlurPx(maxBlurPx),
     }),
-    [preferences, updatePreference],
+    [preferences, updatePreference, maxBlurPx],
   );
 
   return (
     <ContentReviewFilterGlobalPreferencesContext.Provider value={contextValue}>
-      <MaxBlurPxProvider maxBlurPx={maxBlurPx}>{children}</MaxBlurPxProvider>
+      {children}
     </ContentReviewFilterGlobalPreferencesContext.Provider>
   );
 }

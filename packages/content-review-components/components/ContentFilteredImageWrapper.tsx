@@ -6,9 +6,9 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
+import {useContentReviewFilterGlobalPreferences} from '../ContentReviewFilterGlobalPreferenceContext';
 import {useContentReviewFilterSingleMediaContext} from '../ContentReviewFilterSingleMediaContext';
 import {getFilterStyles} from '../FilterPreferenceUtils';
-import {useMaxBlurPx} from '../MaxBlurPxContext';
 import WarningScreen from '../internal-components/WarningScreen';
 import ReducedDetailImageOverlay from './ReducedDetailImageOverlay';
 
@@ -33,7 +33,7 @@ export default function ContentFilteredImageWrapper({
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageDimensions, setImageDimensions] = useState({width: 0, height: 0});
   const {settings} = useContentReviewFilterSingleMediaContext();
-  const maxBlurPx = useMaxBlurPx();
+  const {maxBlurPx} = useContentReviewFilterGlobalPreferences();
 
   // Update dimensions when image loads or resizes
   useEffect(() => {

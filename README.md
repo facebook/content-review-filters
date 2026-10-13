@@ -59,8 +59,9 @@ Blur preferences are normalized between 0 and 1 and applied as a fraction of a
 maximum in pixels. The maximum is 10px by default, so a preference of 1 renders
 `blur(10px)` and 0.5 renders `blur(5px)`.
 
-Apps that need a stronger blur can raise the maximum instead of passing
-preferences above 1, which is outside the range the filter controls validate:
+Apps that need a stronger blur can raise the maximum on
+`ContentReviewFilterGlobalPreferencesProvider`, instead of passing preferences
+above 1, which is outside the range the filter controls validate:
 
 ```jsx
 <ContentReviewFilterGlobalPreferencesProvider
@@ -70,9 +71,8 @@ preferences above 1, which is outside the range the filter controls validate:
 </ContentReviewFilterGlobalPreferencesProvider>
 ```
 
-`ContentReviewFilterSingleMediaContextProvider` accepts the same prop, for apps
-that compose the wrapper components themselves. A provider that leaves it out
-inherits the value from the one above it.
+A value that cannot produce a blur (not finite, zero or negative) is ignored in
+favour of the 10px default.
 
 ### Warning Screen Integration
 

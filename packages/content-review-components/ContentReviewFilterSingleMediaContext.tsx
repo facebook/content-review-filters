@@ -7,7 +7,6 @@
 
 import type {Context, ReactNode} from 'react';
 import React, {createContext, useContext, useState, useEffect} from 'react';
-import {MaxBlurPxProvider} from './MaxBlurPxContext';
 
 export type ContentReviewFilterSingleMediaSettings = {
   blur: number;
@@ -91,18 +90,12 @@ export type ContentReviewFilterSingleMediaContextProviderProps = {
     setting: PK,
     value: ContentReviewFilterSingleMediaSettings[PK],
   ) => void;
-  /**
-   * Blur, in pixels, applied at the maximum blur preference. Inherited from
-   * an enclosing provider when left out; 10 if none sets it.
-   */
-  maxBlurPx?: number;
 };
 
 export function ContentReviewFilterSingleMediaContextProvider({
   children,
   initialSettings,
   onSettingChange,
-  maxBlurPx,
 }: ContentReviewFilterSingleMediaContextProviderProps) {
   const [settings, setSettings] =
     useState<ContentReviewFilterSingleMediaSettings>(initialSettings);
@@ -138,7 +131,7 @@ export function ContentReviewFilterSingleMediaContextProvider({
 
   return (
     <ContentReviewFilterSingleMediaContext.Provider value={contextValue}>
-      <MaxBlurPxProvider maxBlurPx={maxBlurPx}>{children}</MaxBlurPxProvider>
+      {children}
     </ContentReviewFilterSingleMediaContext.Provider>
   );
 }

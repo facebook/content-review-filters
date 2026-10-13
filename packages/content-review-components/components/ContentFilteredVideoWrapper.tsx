@@ -7,9 +7,9 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 
+import {useContentReviewFilterGlobalPreferences} from '../ContentReviewFilterGlobalPreferenceContext';
 import {useContentReviewFilterSingleMediaContext} from '../ContentReviewFilterSingleMediaContext';
 import {getFilterStyles} from '../FilterPreferenceUtils';
-import {useMaxBlurPx} from '../MaxBlurPxContext';
 import WarningScreen from '../internal-components/WarningScreen';
 import VideoCanvasOverlay from './VideoCanvasOverlay';
 
@@ -52,7 +52,7 @@ export default function ContentFilteredVideoWrapper({
   );
   const [videoDimensions, setVideoDimensions] = useState({width: 0, height: 0});
   const {settings} = useContentReviewFilterSingleMediaContext();
-  const maxBlurPx = useMaxBlurPx();
+  const {maxBlurPx} = useContentReviewFilterGlobalPreferences();
 
   // Get video element from imperative ref and set up dimension tracking
   const findVideoElement = useCallback(() => {
