@@ -7,6 +7,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 
+import {useContentReviewFilterGlobalPreferences} from '../ContentReviewFilterGlobalPreferenceContext';
 import {useContentReviewFilterSingleMediaContext} from '../ContentReviewFilterSingleMediaContext';
 import {getFilterStyles} from '../FilterPreferenceUtils';
 import WarningScreen from '../internal-components/WarningScreen';
@@ -51,6 +52,7 @@ export default function ContentFilteredVideoWrapper({
   );
   const [videoDimensions, setVideoDimensions] = useState({width: 0, height: 0});
   const {settings} = useContentReviewFilterSingleMediaContext();
+  const {maxBlurPx} = useContentReviewFilterGlobalPreferences();
 
   // Get video element from imperative ref and set up dimension tracking
   const findVideoElement = useCallback(() => {
@@ -133,6 +135,7 @@ export default function ContentFilteredVideoWrapper({
     transparency > 0,
     transparency,
     isSepiaEnabled,
+    maxBlurPx,
   );
   // Show warning screen if active and not hovered
   const warningScreenOverlay =

@@ -5,6 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/** Blur applied at the maximum blur preference when nothing is configured. */
+export const DEFAULT_MAX_BLUR_PX = 10;
+
+/**
+ * Resolves a configured maximum blur, falling back when the value cannot
+ * produce a usable blur (not a finite number, zero or negative).
+ */
+export const resolveMaxBlurPx = (
+  maxBlurPx: number | undefined,
+  fallback: number = DEFAULT_MAX_BLUR_PX,
+): number => {
+  if (
+    typeof maxBlurPx !== 'number' ||
+    !Number.isFinite(maxBlurPx) ||
+    maxBlurPx <= 0
+  ) {
+    return fallback;
+  }
+  return maxBlurPx;
+};
+
 export const getFilterStyles = (
   blurred: boolean,
   blurThreshold: number,
@@ -12,8 +33,12 @@ export const getFilterStyles = (
   transparency: boolean,
   transparencyLevel: number,
   sepiaFilter: boolean,
+  maxBlurPx: number = DEFAULT_MAX_BLUR_PX,
 ): {filter: string; opacity: string} => {
-  const thresholdMultiplier = 10;
+  // The blur preference is normalized: it is a fraction of the configured
+  // maximum, so an app with a larger scale raises the maximum instead of
+  // pushing the preference out of range.
+  const thresholdMultiplier = resolveMaxBlurPx(maxBlurPx);
   const grayscaleCSS = grayscaled ? 'grayscale(100%)' : '';
   const blurThresholdCSS = blurred
     ? blurThreshold !== 0
